@@ -10,6 +10,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [更新记事](/update.md)
 * [English-README](/easyexcel_en.md)
 
+
 # 二方包 
 
 ```
@@ -21,7 +22,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ```
 
 # 最新版本
-## VERSION : 1.0.2
+## VERSION : 1.1.0
 
 # 维护者
 姬朋飞（玉霄）

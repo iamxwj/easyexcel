@@ -1,7 +1,11 @@
 package com.alibaba.excel.support;
 
+import org.apache.poi.poifs.filesystem.FileMagic;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * 支持读写的数据格式
  *
  * @author jipengfei
  */
@@ -21,5 +25,20 @@ public enum ExcelTypeEnum {
 
     public void setValue(String value) {
         this.value = value;
+    }
+    public static ExcelTypeEnum valueOf(InputStream inputStream){
+        try {
+            FileMagic fileMagic =  FileMagic.valueOf(inputStream);
+            if(FileMagic.OLE2.equals(fileMagic)){
+                return XLS;
+            }
+            if(FileMagic.OOXML.equals(fileMagic)){
+                return XLSX;
+            }
+            throw new IllegalArgumentException("excelTypeEnum can not null");
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

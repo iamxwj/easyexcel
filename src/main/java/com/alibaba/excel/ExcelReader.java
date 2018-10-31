@@ -1,47 +1,72 @@
 package com.alibaba.excel;
 
+import com.alibaba.excel.analysis.ExcelAnalyser;
+import com.alibaba.excel.analysis.ExcelAnalyserImpl;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.parameter.AnalysisParam;
+import com.alibaba.excel.support.ExcelTypeEnum;
+
 import java.io.InputStream;
 import java.util.List;
 
-import com.alibaba.excel.read.ExcelAnalyser;
-import com.alibaba.excel.read.ExcelAnalyserImpl;
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
-
 /**
- * Excel解析，thread unsafe
+ * Excel thread unsafe
  *
  * @author jipengfei
  */
 public class ExcelReader {
 
     /**
-     * 解析器
+     * analyser
      */
     private ExcelAnalyser analyser = new ExcelAnalyserImpl();
 
     /**
-     * @param in            文件输入流
-     * @param excelTypeEnum excel类型03、07
-     * @param customContent 自定义模型可以在{@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext中获取用于监听者回调使用
-     * @param eventListener 用户监听
+     * @param in
+     * @param excelTypeEnum 0307
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
      */
+    @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
                        AnalysisEventListener eventListener) {
         this(in, excelTypeEnum, customContent, eventListener, true);
     }
 
     /**
-     * @param in            文件输入流
-     * @param excelTypeEnum excel类型03、07
-     * @param customContent 自定义模型可以在{@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext中获取用于监听者回调使用
-     * @param eventListener 用户监听
-     * @param trim          是否对解析的String做trim()默认true,用于防止 excel中空格引起的装换报错。
+     * @param in
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
      */
+    public ExcelReader(InputStream in, Object customContent,
+                       AnalysisEventListener eventListener) {
+        this(in, customContent, eventListener, true);
+    }
+
+    /**
+     * old 1.1.0
+     * @param param
+     * @param eventListener
+     */
+    @Deprecated
+    public ExcelReader(AnalysisParam param, AnalysisEventListener eventListener) {
+        this(param.getIn(), param.getExcelTypeEnum(), param.getCustomContent(), eventListener, true);
+    }
+
+    /**
+     * @param in
+     * @param excelTypeEnum 03 07
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
+     * @param trim
+     */
+    @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
                        AnalysisEventListener eventListener, boolean trim) {
         validateParam(in, excelTypeEnum, eventListener);
@@ -49,39 +74,48 @@ public class ExcelReader {
     }
 
     /**
-     * 读一个sheet，且没有模型映射
+     * @param in
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
+     * @param trim
+     */
+    public ExcelReader(InputStream in, Object customContent,
+                       AnalysisEventListener eventListener, boolean trim) {
+        ExcelTypeEnum excelTypeEnum = ExcelTypeEnum.valueOf(in);
+        validateParam(in, excelTypeEnum, eventListener);
+        analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
+    }
+
+    /**
      */
     public void read() {
         analyser.analysis();
     }
 
     /**
-     * 读指定个sheet，没有模型映射
      *
-     * @param sheet 需要解析的sheet
+     * @param sheet
      */
     public void read(Sheet sheet) {
         analyser.analysis(sheet);
     }
 
+    @Deprecated
+    public void read(Sheet sheet,Class<? extends BaseRowModel> clazz){
+        sheet.setClazz(clazz);
+        analyser.analysis(sheet);
+    }
+
     /**
-     * 读取excel中包含哪些sheet
      *
-     * @return Sheets
+     * @return
      */
     public List<Sheet> getSheets() {
         return analyser.getSheets();
     }
 
     /**
-     * 关闭流，删除临时目录文件
-     */
-    public void finish(){
-        analyser.stop();
-    }
-
-    /**
-     * 校验入参
      *
      * @param in
      * @param excelTypeEnum

@@ -1,29 +1,25 @@
-package com.alibaba.excel.read.event;
+package com.alibaba.excel.event;
 
 
 /**
- * 管理每个监听者
  *
  * @author jipengfei
  */
 public interface AnalysisEventRegisterCenter {
 
     /**
-     * 增加监听者
-     * @param name 名称
-     * @param listener 监听器
+     * @param name 监听名定义
+     * @param listener 具体实现
      */
     void appendLister(String name, AnalysisEventListener listener);
 
 
     /**
-     * 通知所有监听者
      * @param event 事件
      */
     void notifyListeners(OneRowAnalysisFinishEvent event);
 
     /**
-     * 清空所有监听者
      */
     void cleanAllListeners();
 }

@@ -1,17 +1,16 @@
 package read.v03;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.read.event.AnalysisEventListener;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
 import function.listener.ExcelListener;
 import function.model.LoanInfo;
 import junit.framework.TestCase;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by jipengfei on 17/2/19.
@@ -20,12 +19,12 @@ public class XLS2003FunctionTest extends TestCase {
 
     @Test
     public void testExcel2003NoModel() {
-        InputStream inputStream = getInputStream("loan1.xls");
+        InputStream inputStream = getInputStream("2003.xls");
         try {
             // 解析每行结果在listener中处理
             ExcelListener listener = new ExcelListener();
 
-            ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+            ExcelReader excelReader = new ExcelReader(inputStream,  null, listener);
             excelReader.read();
         } catch (Exception e) {
             e.printStackTrace();

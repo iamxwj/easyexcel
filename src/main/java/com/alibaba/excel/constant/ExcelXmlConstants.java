@@ -1,8 +1,7 @@
-package com.alibaba.excel.util;
+package com.alibaba.excel.constant;
 
 /**
  * @author jipengfei
- *
  */
 public class ExcelXmlConstants {
     public static final String DIMENSION = "dimension";
